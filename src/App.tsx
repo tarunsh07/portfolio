@@ -247,7 +247,7 @@ function Navbar() {
 
   return (
     <motion.header style={{ opacity: navbarOpacity, pointerEvents }} className="fixed inset-x-0 top-0 z-50 px-4 py-4 md:px-8 lg:px-12">
-      <nav className="ml-auto flex max-w-[1500px] items-center justify-end">
+      <nav className="ml-auto hidden max-w-[1500px] items-center justify-end md:flex">
         <div className="flex items-center gap-2">
           <GlassIcon href="https://github.com/tarunsh07" label="GitHub"><Github className="h-3.5 w-3.5" /></GlassIcon>
           <GlassIcon href="https://linkedin.com/in/tarunsh07" label="LinkedIn"><Linkedin className="h-3.5 w-3.5" /></GlassIcon>
