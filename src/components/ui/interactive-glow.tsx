@@ -1,11 +1,29 @@
 "use client"
 
-import React from "react"
-import { motion } from "framer-motion"
+import React, { useEffect, useState } from "react"
+import { motion, useScroll, useTransform } from "framer-motion"
 
 export function InteractiveGlow() {
+  const { scrollY } = useScroll()
+  const [windowHeight, setWindowHeight] = useState(0)
+
+  useEffect(() => {
+    setWindowHeight(window.innerHeight)
+    const handleResize = () => setWindowHeight(window.innerHeight)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  // Fade in exactly as the user finishes scrolling past the 350vh hero section
+  const containerOpacity = useTransform(
+    scrollY,
+    [windowHeight ? windowHeight * 2.8 : 2000, windowHeight ? windowHeight * 3.5 : 3000],
+    [0, 1],
+    { clamp: true }
+  )
+
   return (
-    <div className="pointer-events-none fixed inset-0 z-30 overflow-hidden">
+    <motion.div style={{ opacity: containerOpacity }} className="pointer-events-none fixed inset-0 z-30 overflow-hidden">
       {/* Left Glow */}
       <motion.div
         style={{ 
@@ -25,6 +43,6 @@ export function InteractiveGlow() {
         }}
         className="absolute right-0 top-1/2 -translate-y-1/2 h-[80vh]"
       />
-    </div>
+    </motion.div>
   )
 }
