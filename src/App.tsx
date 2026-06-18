@@ -226,8 +226,27 @@ function App() {
 }
 
 function Navbar() {
+  const { scrollY } = useScroll()
+  const [windowHeight, setWindowHeight] = useState(0)
+
+  useEffect(() => {
+    setWindowHeight(window.innerHeight)
+    const handleResize = () => setWindowHeight(window.innerHeight)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  const navbarOpacity = useTransform(
+    scrollY,
+    [windowHeight ? windowHeight * 2.8 : 2000, windowHeight ? windowHeight * 3.5 : 3000],
+    [0, 1],
+    { clamp: true }
+  )
+
+  const pointerEvents = useTransform(navbarOpacity, (v) => (v > 0 ? "auto" : "none"))
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 py-4 md:px-8 lg:px-12">
+    <motion.header style={{ opacity: navbarOpacity, pointerEvents }} className="fixed inset-x-0 top-0 z-50 px-4 py-4 md:px-8 lg:px-12">
       <nav className="ml-auto flex max-w-[1500px] items-center justify-end">
         <div className="flex items-center gap-2">
           <GlassIcon href="https://github.com/tarunsh07" label="GitHub"><Github className="h-3.5 w-3.5" /></GlassIcon>
@@ -235,7 +254,7 @@ function Navbar() {
           <GlassIcon href="mailto:tarun.sh.work@gmail.com" label="Email" target="_self"><Mail className="h-3.5 w-3.5" /></GlassIcon>
         </div>
       </nav>
-    </header>
+    </motion.header>
   )
 }
 
