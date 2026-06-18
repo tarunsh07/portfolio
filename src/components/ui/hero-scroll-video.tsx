@@ -154,7 +154,7 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
   return (
     <section ref={containerRef} className="relative h-[350lvh]">
       {/* Pinned Video Container */}
-      <div className="sticky top-0 h-[100lvh] w-full overflow-hidden bg-[#05070a]">
+      <div className="sticky top-0 h-[100lvh] w-full overflow-hidden bg-[#000000]">
         <div className="absolute inset-0 pt-[20vh] pb-[16vh] xl:p-0">
           <div className="relative h-full w-full overflow-hidden">
             <img
@@ -168,7 +168,7 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
             />
           </div>
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#05070a] to-transparent z-10" />
+        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#000000] to-transparent z-10" />
         <div className="absolute inset-0 bg-black/20 z-0" />
 
         {/* Text Content */}

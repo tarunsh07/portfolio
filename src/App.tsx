@@ -193,7 +193,7 @@ function GlobalLoader() {
       initial={{ opacity: 1 }}
       animate={{ opacity: loaded ? 0 : 1 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-[#05070a] ${loaded ? "pointer-events-none" : ""}`}
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-[#000000] ${loaded ? "pointer-events-none" : ""}`}
     >
       <div className="flex flex-col items-center">
         <div className="h-6 w-6 animate-spin rounded-full border border-white/10 border-t-cyan-300/50" />
@@ -205,7 +205,7 @@ function GlobalLoader() {
 
 function App() {
   return (
-    <main className="relative bg-[#05070a] text-white">
+    <main className="relative bg-[#000000] text-white">
       <GlobalLoader />
       <GlassFilter />
       <InteractiveGlow />

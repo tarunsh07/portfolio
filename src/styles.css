@@ -27,7 +27,7 @@
 
   html {
     scroll-behavior: smooth;
-    background: #05070a;
+    background: #000000;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
@@ -40,7 +40,7 @@
   body {
     margin: 0;
     min-width: 320px;
-    background: #05070a;
+    background: #000000;
     color: #fff;
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
     letter-spacing: 0;
