@@ -37,7 +37,7 @@ export function InteractiveGlow() {
       <motion.div
         style={{ 
           opacity: 0.3,
-          background: 'radial-gradient(ellipse at right center, rgba(167, 139, 250, 1) 0%, transparent 70%)' 
+          background: 'radial-gradient(ellipse at right center, rgba(34, 211, 238, 1) 0%, transparent 70%)' 
         }}
         className="absolute right-0 top-1/2 -translate-y-1/2 h-[80vh] w-[12px] xl:w-[30px]"
       />
