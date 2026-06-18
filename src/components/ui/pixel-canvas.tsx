@@ -186,6 +186,9 @@ class PixelCanvasElement extends HTMLElement {
 
     this.parent?.addEventListener("mouseenter", this.onMouseEnter)
     this.parent?.addEventListener("mouseleave", this.onMouseLeave)
+    this.parent?.addEventListener("touchstart", this.onMouseEnter, { passive: true })
+    this.parent?.addEventListener("touchend", this.onMouseLeave, { passive: true })
+    this.parent?.addEventListener("touchcancel", this.onMouseLeave, { passive: true })
 
     if (!this.noFocus) {
       this.parent?.addEventListener("focus", this.onFocus, { capture: true })
@@ -198,6 +201,9 @@ class PixelCanvasElement extends HTMLElement {
     this.resizeObserver?.disconnect()
     this.parent?.removeEventListener("mouseenter", this.onMouseEnter)
     this.parent?.removeEventListener("mouseleave", this.onMouseLeave)
+    this.parent?.removeEventListener("touchstart", this.onMouseEnter)
+    this.parent?.removeEventListener("touchend", this.onMouseLeave)
+    this.parent?.removeEventListener("touchcancel", this.onMouseLeave)
 
     if (!this.noFocus) {
       this.parent?.removeEventListener("focus", this.onFocus, { capture: true })

@@ -152,9 +152,9 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
   const textOpacity = useTransform(scrollY, [0, 1500], [1, 0], { clamp: true })
 
   return (
-    <section ref={containerRef} className="relative h-[350dvh]">
+    <section ref={containerRef} className="relative h-[350lvh]">
       {/* Pinned Video Container */}
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-[#05070a]">
+      <div className="sticky top-0 h-[100lvh] w-full overflow-hidden bg-[#05070a]">
         <div className="absolute inset-0 pt-[20vh] pb-[16vh] xl:p-0">
           <div className="relative h-full w-full overflow-hidden">
             <img
