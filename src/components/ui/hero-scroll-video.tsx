@@ -155,7 +155,7 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
     <section ref={containerRef} className="relative h-[350dvh]">
       {/* Pinned Video Container */}
       <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-[#05070a]">
-        <div className="absolute inset-0 pt-[20vh] pb-[16vh] md:p-0">
+        <div className="absolute inset-0 pt-[20vh] pb-[16vh] lg:p-0">
           <div className="relative h-full w-full overflow-hidden">
             <img
               src="/heroframes/frame_001.webp"
@@ -174,23 +174,23 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
         {/* Text Content */}
         <div className="absolute inset-0 z-20 pointer-events-none">
           {/* Top Greeting */}
-          <motion.p style={{ opacity: textOpacity }} className="absolute top-[6vh] left-1/2 -translate-x-1/2 text-lg md:text-2xl font-serif italic text-white/80 whitespace-nowrap">
+          <motion.p style={{ opacity: textOpacity }} className="absolute top-[6vh] left-1/2 -translate-x-1/2 text-lg lg:text-2xl font-serif italic text-white/80 whitespace-nowrap">
             Hello, I’m
           </motion.p>
 
           {/* Center Name Split */}
-          <div className="absolute inset-0 flex flex-col items-center justify-start pt-[12vh] pb-0 md:flex-row md:items-center md:justify-between md:px-32 md:pt-0">
-            <motion.h1 style={{ opacity: textOpacity }} className="text-[2.75rem] md:ml-24 md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20">
+          <div className="absolute inset-0 flex flex-col items-center justify-start pt-[12vh] pb-0 lg:flex-row lg:items-center lg:justify-between lg:px-32 lg:pt-0">
+            <motion.h1 style={{ opacity: textOpacity }} className="text-[2.75rem] sm:text-[4rem] lg:ml-24 lg:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20">
               Tarun
             </motion.h1>
-            <motion.h1 style={{ opacity: textOpacity }} className="text-[2.75rem] md:mr-20 md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20 -mt-4 md:mt-0">
+            <motion.h1 style={{ opacity: textOpacity }} className="text-[2.75rem] sm:text-[4rem] lg:mr-20 lg:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20 -mt-4 lg:mt-0">
               Sharma
             </motion.h1>
           </div>
 
           {/* Bottom Role & Scroll */}
           <motion.div style={{ opacity: textOpacity }} className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
-            <p className="text-xs md:text-sm text-white/50 mb-3 tracking-[0.3em] uppercase font-light whitespace-nowrap">Code • Create • Evolve</p>
+            <p className="text-xs lg:text-sm text-white/50 mb-3 tracking-[0.3em] uppercase font-light whitespace-nowrap">Code • Create • Evolve</p>
             <span className="text-white/40 text-[10px] mb-2 font-mono uppercase tracking-widest">Scroll</span>
             <div className="w-[1px] h-8 bg-gradient-to-b from-white/40 to-transparent" />
           </motion.div>
