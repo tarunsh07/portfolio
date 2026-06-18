@@ -182,12 +182,10 @@ function GlobalLoader() {
   const [loaded, setLoaded] = useState(false)
   
   useEffect(() => {
-    const handleLoad = () => setLoaded(true)
-    if (document.readyState === 'complete') {
-      setTimeout(handleLoad, 500)
-    } else {
-      window.addEventListener('load', () => setTimeout(handleLoad, 500))
-    }
+    // Fade out after a short delay instead of waiting for window.onload
+    // This prevents the loader from blocking if there are many background assets (like video frames)
+    const timer = setTimeout(() => setLoaded(true), 800)
+    return () => clearTimeout(timer)
   }, [])
 
   return (

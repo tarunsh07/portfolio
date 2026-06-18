@@ -35,11 +35,12 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
     }
 
     const preloadFrames = async () => {
-      const frames: HTMLImageElement[] = []
       const totalFrames = 151
+      const framesArray: (HTMLImageElement | null)[] = new Array(totalFrames).fill(null)
       let loadedCount = 0
 
-      for (let i = 1; i <= totalFrames; i++) {
+      // 1. Sequentially load the first 10 frames to guarantee immediate smooth scrolling
+      for (let i = 1; i <= Math.min(10, totalFrames); i++) {
         if (!active) break
         const img = new Image()
         const index = i.toString().padStart(3, "0")
@@ -47,19 +48,33 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
         
         await new Promise<void>((resolve) => {
           img.onload = () => {
-            frames.push(img)
-            loadedCount++
-            // Show canvas early once we have the first 10 frames
-            if (loadedCount === 10) setFramesReady(true)
+            if (active) {
+              framesArray[i - 1] = img
+              loadedCount++
+              if (loadedCount === 10) setFramesReady(true)
+            }
             resolve()
           }
-          img.onerror = () => resolve() // skip missing frames
+          img.onerror = () => resolve()
         })
       }
 
-      if (active) {
-        framesRef.current = frames
-        if (!framesReady) setFramesReady(true)
+      if (!active) return
+      framesRef.current = framesArray as HTMLImageElement[]
+      if (!framesReady) setFramesReady(true)
+
+      // 2. Load the remaining frames in parallel (non-blocking)
+      for (let i = 11; i <= totalFrames; i++) {
+        if (!active) break
+        const img = new Image()
+        const index = i.toString().padStart(3, "0")
+        img.src = `/heroframes/frame_${index}.webp`
+        
+        img.onload = () => {
+          if (active) {
+            framesArray[i - 1] = img
+          }
+        }
       }
     }
 
@@ -94,10 +109,18 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
     const unsubscribe = scrollYProgress.on("change", (progress) => {
       if (framesReady && framesRef.current.length > 0) {
         const frames = framesRef.current
-        const idx = Math.min(Math.floor(progress * frames.length), frames.length - 1)
-        if (idx !== lastFrameIndex && frames[idx]) {
-          lastFrameIndex = idx
-          drawFrame(frames[idx])
+        const totalFrames = 151
+        const targetIdx = Math.min(Math.floor(progress * totalFrames), totalFrames - 1)
+        
+        // Find the closest available frame looking backwards
+        let idxToDraw = targetIdx
+        while (idxToDraw >= 0 && !frames[idxToDraw]) {
+          idxToDraw--
+        }
+        
+        if (idxToDraw >= 0 && idxToDraw !== lastFrameIndex) {
+          lastFrameIndex = idxToDraw
+          drawFrame(frames[idxToDraw])
         }
       }
     })
@@ -105,10 +128,17 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
     // Initial draw to prevent blank canvas before the first scroll event
     if (framesReady && framesRef.current.length > 0 && lastFrameIndex === -1) {
       const frames = framesRef.current
-      const idx = Math.min(Math.floor(scrollYProgress.get() * frames.length), frames.length - 1)
-      if (frames[idx]) {
-        lastFrameIndex = idx
-        drawFrame(frames[idx])
+      const totalFrames = 151
+      const targetIdx = Math.min(Math.floor(scrollYProgress.get() * totalFrames), totalFrames - 1)
+      
+      let idxToDraw = targetIdx
+      while (idxToDraw >= 0 && !frames[idxToDraw]) {
+        idxToDraw--
+      }
+      
+      if (idxToDraw >= 0) {
+        lastFrameIndex = idxToDraw
+        drawFrame(frames[idxToDraw])
       }
     }
 
