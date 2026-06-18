@@ -529,8 +529,6 @@ function Footer() {
       <p>© 2026 Tarun Sharma.</p>
       <div className="flex gap-6">
         <a href="https://github.com/tarunsh07" target="_blank" rel="noreferrer" className="hover:text-cyan-200">GitHub</a>
-        <a href="https://leetcode.com/u/sh_tarun07/" target="_blank" rel="noreferrer" className="hover:text-lime-200">LeetCode</a>
-        <a href="https://codeforces.com/profile/tarun_sh" target="_blank" rel="noreferrer" className="hover:text-violet-200">Codeforces</a>
       </div>
     </footer>
   )

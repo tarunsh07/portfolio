@@ -155,15 +155,19 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
     <section ref={containerRef} className="relative h-[350dvh]">
       {/* Pinned Video Container */}
       <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-[#05070a]">
-        <img
-          src="/heroframes/frame_001.webp"
-          className="absolute inset-0 h-full w-full object-cover"
-          alt="Flower"
-        />
-        <canvas
-          ref={canvasRef}
-          className={`absolute inset-0 h-full w-full object-cover ${framesReady ? "visible" : "invisible"}`}
-        />
+        <div className="absolute inset-0 px-4 py-28 md:p-0">
+          <div className="relative h-full w-full overflow-hidden rounded-3xl md:rounded-none">
+            <img
+              src="/heroframes/frame_001.webp"
+              className="absolute inset-0 h-full w-full object-cover"
+              alt="Flower"
+            />
+            <canvas
+              ref={canvasRef}
+              className={`absolute inset-0 h-full w-full object-cover ${framesReady ? "visible" : "invisible"}`}
+            />
+          </div>
+        </div>
         <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#05070a] to-transparent z-10" />
         <div className="absolute inset-0 bg-black/20 z-0" />
 
@@ -175,11 +179,11 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
           </motion.p>
 
           {/* Center Name Split */}
-          <div className="absolute inset-0 flex items-center justify-between px-8 md:px-32">
-            <motion.h1 style={{ opacity: textOpacity }} className="ml-16 md:ml-24 text-5xl md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20">
+          <div className="absolute inset-0 flex flex-col items-center justify-start pt-[14vh] pb-0 md:flex-row md:items-center md:justify-between md:px-32 md:pt-0">
+            <motion.h1 style={{ opacity: textOpacity }} className="text-[3.5rem] md:ml-24 md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20">
               Tarun
             </motion.h1>
-            <motion.h1 style={{ opacity: textOpacity }} className="mr-12 md:mr-20 text-5xl md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20">
+            <motion.h1 style={{ opacity: textOpacity }} className="text-[3.5rem] md:mr-20 md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20 -mt-2 md:mt-0">
               Sharma
             </motion.h1>
           </div>
