@@ -155,7 +155,7 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
     <section ref={containerRef} className="relative h-[350dvh]">
       {/* Pinned Video Container */}
       <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-[#05070a]">
-        <div className="absolute inset-0 px-4 pt-28 pb-12 md:p-0">
+        <div className="absolute inset-0 px-10 pt-28 pb-12 md:p-0">
           <div className="relative h-full w-full overflow-hidden rounded-3xl md:rounded-none">
             <img
               src="/heroframes/frame_001.webp"
@@ -179,11 +179,11 @@ export function HeroScrollVideo({ videoUrl }: HeroScrollVideoProps) {
           </motion.p>
 
           {/* Center Name Split */}
-          <div className="absolute inset-0 flex flex-col items-center justify-start pt-[10vh] pb-0 md:flex-row md:items-center md:justify-between md:px-32 md:pt-0">
+          <div className="absolute inset-0 flex flex-col items-center justify-start pt-[5vh] pb-0 md:flex-row md:items-center md:justify-between md:px-32 md:pt-0">
             <motion.h1 style={{ opacity: textOpacity }} className="text-[3.5rem] md:ml-24 md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20">
               Tarun
             </motion.h1>
-            <motion.h1 style={{ opacity: textOpacity }} className="text-[3.5rem] md:mr-20 md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20 -mt-5 md:mt-0">
+            <motion.h1 style={{ opacity: textOpacity }} className="text-[3.5rem] md:mr-20 md:text-7xl font-serif italic font-medium tracking-[6px] text-transparent bg-clip-text bg-gradient-to-br from-[#F8F4FF] via-[#E8F2FF] to-[#FFDCCB]/20 -mt-7 md:mt-0">
               Sharma
             </motion.h1>
           </div>
