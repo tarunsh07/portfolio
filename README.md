@@ -5,6 +5,8 @@
 
   **A highly interactive, performant, and visually stunning personal portfolio.**
 
+  [Live Preview](https://tarunsh-dev.vercel.app/)
+
   <br />
 
   ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
@@ -15,15 +17,15 @@
 
 </div>
 
-## ✨ Features
+## Features
 
-- 🎥 **Buttery Smooth Video Scrubbing:** Features a custom-built 60fps scroll-scrubbing hero section utilizing pre-extracted 1080p WebP frames for flawless performance and zero network jank.
-- 🎨 **Dynamic Grid Layouts:** Intelligent flexbox and grid hybrid layouts that seamlessly cascade and perfectly center content depending on the device size and item count.
-- ⚡ **Lightning Fast:** Built on top of Vite and React, heavily optimized to prevent unneeded repaints, ensuring a solid 60fps experience even with heavy CSS filters and blurs.
-- 📱 **Responsive Design:** Completely mobile-ready with bespoke styling for tablets and mobile devices.
-- 💫 **Micro-Interactions:** Custom spotlight hover effects, magnetic cards, and graceful entrance animations powered by Framer Motion.
+- **Buttery Smooth Video Scrubbing:** Features a custom-built 60fps scroll-scrubbing hero section utilizing pre-extracted 1080p WebP frames for flawless performance and zero network jank.
+- **Dynamic Grid Layouts:** Intelligent flexbox and grid hybrid layouts that seamlessly cascade and perfectly center content depending on the device size and item count.
+- **Lightning Fast:** Built on top of Vite and React, heavily optimized to prevent unneeded repaints, ensuring a solid 60fps experience even with heavy CSS filters and blurs.
+- **Responsive Design:** Completely mobile-ready with bespoke styling for tablets and mobile devices.
+- **Micro-Interactions:** Custom spotlight hover effects, magnetic cards, and graceful entrance animations powered by Framer Motion.
 
-## 🚀 Getting Started
+## Getting Started
 
 Follow these steps to run the portfolio locally on your machine.
 
@@ -50,7 +52,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
    npm run dev
    ```
 
-## 🛠️ Built With
+## Built With
 
 - **[React](https://reactjs.org/)** - UI Framework
 - **[Vite](https://vitejs.dev/)** - Frontend Tooling
@@ -58,7 +60,7 @@ Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
 - **[Framer Motion](https://www.framer.com/motion/)** - Animation library
 - **[Lucide React](https://lucide.dev/)** - Iconography
 
-## 📬 Contact
+## Contact
 
 - **LinkedIn:** [tarunsharma-](https://www.linkedin.com/in/tarunsharma-/)
 - **GitHub:** [@tarunsh07](https://github.com/tarunsh07)
