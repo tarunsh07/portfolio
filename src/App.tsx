@@ -10,7 +10,6 @@ import {
   GraduationCap,
   Linkedin,
   Mail,
-  Phone,
   ShieldCheck,
   Terminal,
 } from "lucide-react"
@@ -467,9 +466,6 @@ function Contact() {
           </GlassButton>
           <GlassButton href="https://linkedin.com/in/tarunsh07" className="glass-accent-violet">
             LinkedIn <Linkedin className="ml-2 h-4 w-4" />
-          </GlassButton>
-          <GlassButton href="tel:+919350157631" target="_self">
-            +91 9350157631 <Phone className="ml-2 h-4 w-4" />
           </GlassButton>
         </motion.div>
         <motion.p {...fadeUp(0.2)} className="mt-7 text-sm text-white/55">New Delhi, India</motion.p>
