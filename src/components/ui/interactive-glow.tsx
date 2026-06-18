@@ -30,7 +30,7 @@ export function InteractiveGlow() {
           opacity: 0.3,
           background: 'radial-gradient(ellipse at left center, rgba(34, 211, 238, 1) 0%, transparent 70%)' 
         }}
-        className="absolute left-0 top-1/2 -translate-y-1/2 h-[80vh] w-[12px] lg:w-[30px]"
+        className="absolute left-0 top-1/2 -translate-y-1/2 h-[80vh] w-[12px] xl:w-[30px]"
       />
       
       {/* Right Glow */}
@@ -39,7 +39,7 @@ export function InteractiveGlow() {
           opacity: 0.3,
           background: 'radial-gradient(ellipse at right center, rgba(167, 139, 250, 1) 0%, transparent 70%)' 
         }}
-        className="absolute right-0 top-1/2 -translate-y-1/2 h-[80vh] w-[12px] lg:w-[30px]"
+        className="absolute right-0 top-1/2 -translate-y-1/2 h-[80vh] w-[12px] xl:w-[30px]"
       />
     </motion.div>
   )

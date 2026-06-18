@@ -326,12 +326,12 @@ function Approach() {
     "I enjoy turning ideas into dependable software by understanding the people using it, choosing practical tools, and refining every interaction with care."
 
   return (
-    <section ref={sectionRef} className="px-5 py-16 md:px-12 md:py-24 lg:px-20">
-      <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
-        <motion.div {...fadeUp(0)} className="order-last aspect-square overflow-hidden rounded-lg lg:order-none">
+    <section ref={sectionRef} className="px-5 py-16 md:px-12 md:py-24 xl:px-20">
+      <div className="mx-auto grid max-w-7xl items-center gap-10 xl:grid-cols-[0.92fr_1.08fr] xl:gap-16">
+        <motion.div {...fadeUp(0)} className="order-last aspect-square overflow-hidden rounded-lg xl:order-none">
           <video className="h-full w-full object-cover" src={STORY_VIDEO} autoPlay muted loop playsInline />
         </motion.div>
-        <div className="order-first lg:order-none">
+        <div className="order-first xl:order-none">
           <p className="section-label mb-6">How I work</p>
           <RevealParagraph text={text} progress={scrollYProgress} className="text-3xl font-medium leading-[1.2] md:text-5xl" />
         </div>
