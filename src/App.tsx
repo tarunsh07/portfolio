@@ -175,7 +175,7 @@ const highlights = [
   ["1,000+ coding problems", "Solved DSA and competitive programming problems across LeetCode, Codeforces, and GeeksforGeeks.", "190 242 100"],
   ["3x CVSPK Scholarship", "Received the university scholarship three times for maintaining a position in the academic top 5%.", "167 139 250"],
   // ["102k+ solution views", "Published LeetCode explanations that have helped readers across a broad range of DSA topics.", "251 191 36"],
-  ["GYANSUTRA resource hub", "Created and maintained academic resources used by more than 2,000 college students.", "52 211 153"],
+  ["GYANSUTRA resource hub", "Conceptualized and co-created an academic resource hub in collaboration with Astronomy Club of College, now serving 2,200+ students.", "52 211 153"],
   ["SIH 2024 pre-finalist", "Led a team to the pre-final round of Smart India Hackathon in a field of more than 350 teams.", "244 114 182"],
 ]
 
