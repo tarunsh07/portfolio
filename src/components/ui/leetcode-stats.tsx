@@ -5,10 +5,12 @@ import { ArrowUpRight, Flame, Award, Code2, Eye, Star, BookOpen } from "lucide-r
 const USERNAME = "sh_tarun07"
 const PROFILE_URL = `https://alfa-leetcode-api.onrender.com/userProfile/${USERNAME}`
 const BADGES_URL = `https://alfa-leetcode-api.onrender.com/${USERNAME}/badges`
+const LEETCODE_BASE = "https://leetcode.com"
 
-// Bypass LeetCode's CORS restrictions using wsrv.nl image proxy
-function proxyImg(url: string) {
-  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=80&h=80&fit=contain&output=webp`
+// Fix badge icon URL — relative paths come from the API for monthly badges
+function fixIconUrl(icon: string): string {
+  if (icon.startsWith("http")) return icon
+  return `${LEETCODE_BASE}${icon}`
 }
 
 interface ProfileData {
@@ -40,39 +42,37 @@ function SkeletonBlock({ className }: { className: string }) {
   return <div className={`animate-pulse rounded-xl bg-white/[0.04] ${className}`} />
 }
 
-// Build heatmap: fill a 53-week grid ending today from the API's timestamp→count map
+// Build heatmap grid (53 weeks) using UTC date keys to correctly match API timestamps
 function buildHeatmap(calendar: Record<string, number>) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // Build a UTC-date → count map
+  const calMap: Record<string, number> = {}
+  Object.entries(calendar).forEach(([ts, count]) => {
+    const d = new Date(Number(ts) * 1000)
+    const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`
+    calMap[key] = count
+  })
 
-  // End on the Saturday of the current week
-  const end = new Date(today)
-  end.setDate(end.getDate() + (6 - end.getDay()))
+  // Build grid: end on current Saturday (UTC), start 52 weeks before that Sunday
+  const now = new Date()
+  const endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+  // Advance to Saturday
+  endDate.setUTCDate(endDate.getUTCDate() + (6 - endDate.getUTCDay()))
 
-  // Start exactly 52 weeks (364 days) before Sunday of end's week
-  const start = new Date(end)
-  start.setDate(start.getDate() - 364)
-  // Snap to Sunday
-  start.setDate(start.getDate() - start.getDay())
+  const startDate = new Date(endDate)
+  startDate.setUTCDate(startDate.getUTCDate() - 364)
+  // Snap back to Sunday
+  startDate.setUTCDate(startDate.getUTCDate() - startDate.getUTCDay())
 
-  const weeks: { date: Date; count: number; ts: number }[][] = []
-  const cur = new Date(start)
+  const weeks: { dateKey: string; date: Date; count: number }[][] = []
+  const cur = new Date(startDate)
 
-  while (cur <= end) {
-    const week: { date: Date; count: number; ts: number }[] = []
+  while (cur <= endDate) {
+    const week: { dateKey: string; date: Date; count: number }[] = []
     for (let d = 0; d < 7; d++) {
-      const ts = Math.floor(cur.getTime() / 1000)
-      const count = calendar[String(ts)] ?? 0
-      week.push({ date: new Date(cur), count, ts })
-      cur.setDate(cur.getDate() + 1)
-      if (cur > end && d < 6) {
-        // pad with empty future days
-        while (week.length < 7) {
-          week.push({ date: new Date(cur), count: -1, ts: 0 })
-          cur.setDate(cur.getDate() + 1)
-        }
-        break
-      }
+      const dateKey = `${cur.getUTCFullYear()}-${String(cur.getUTCMonth() + 1).padStart(2, "0")}-${String(cur.getUTCDate()).padStart(2, "0")}`
+      const count = cur > endDate ? -1 : (calMap[dateKey] ?? 0)
+      week.push({ dateKey, date: new Date(cur), count })
+      cur.setUTCDate(cur.getUTCDate() + 1)
     }
     weeks.push(week)
   }
@@ -83,9 +83,12 @@ function getMonthLabels(weeks: { date: Date }[][]) {
   const labels: { label: string; col: number }[] = []
   let lastMonth = -1
   weeks.forEach((week, col) => {
-    const m = week[0].date.getMonth()
+    const m = week[0].date.getUTCMonth()
     if (m !== lastMonth) {
-      labels.push({ label: week[0].date.toLocaleString("default", { month: "short" }), col })
+      labels.push({
+        label: week[0].date.toLocaleString("default", { month: "short", timeZone: "UTC" }),
+        col,
+      })
       lastMonth = m
     }
   })
@@ -100,9 +103,9 @@ function HeatCell({ count }: { count: number }) {
       : count <= 2
       ? "bg-cyan-600/50"
       : count <= 5
-      ? "bg-cyan-500/65"
+      ? "bg-cyan-500/70"
       : count <= 10
-      ? "bg-cyan-400/80"
+      ? "bg-cyan-400/85"
       : "bg-cyan-300"
   return (
     <div
@@ -112,9 +115,7 @@ function HeatCell({ count }: { count: number }) {
   )
 }
 
-function CircleRing({
-  solved, total, color, bg, label,
-}: {
+function CircleRing({ solved, total, color, bg, label }: {
   solved: number; total: number; color: string; bg: string; label: string
 }) {
   const r = 22
@@ -168,10 +169,13 @@ export function LeetCodeStats() {
 
   const weeks = profile?.submissionCalendar ? buildHeatmap(profile.submissionCalendar) : []
   const monthLabels = weeks.length > 0 ? getMonthLabels(weeks) : []
+  const totalSubmissions = profile
+    ? Object.values(profile.submissionCalendar).reduce((a, b) => a + b, 0)
+    : 0
 
-  // Hard-coded community stats (not available via public API)
+  // Community stats (not available via public API — hardcoded from profile)
   const communityStats = [
-    { label: "Solution Views", value: "103.7K", sub: "+341 this week", icon: Eye, color: "text-cyan-300", glow: "from-cyan-500/10" },
+    { label: "Solution Views", value: "103.7k", sub: "+341 this week", icon: Eye, color: "text-cyan-300", glow: "from-cyan-500/10" },
     { label: "Solutions Published", value: "15", sub: "Accepted explanations", icon: BookOpen, color: "text-emerald-300", glow: "from-emerald-500/10" },
     { label: "Reputation", value: "724", sub: "Community standing", icon: Star, color: "text-amber-300", glow: "from-amber-500/10" },
   ]
@@ -183,7 +187,7 @@ export function LeetCodeStats() {
     >
       <motion.div style={{ opacity, y }} className="mx-auto max-w-7xl space-y-5">
 
-        {/* ── Heading ── */}
+        {/* Heading */}
         <div className="mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="section-label mb-3">Competitive Programming</p>
@@ -203,7 +207,7 @@ export function LeetCodeStats() {
           </a>
         </div>
 
-        {/* ── Skeleton ── */}
+        {/* Skeleton */}
         {loading && (
           <div className="space-y-5">
             <div className="grid gap-5 md:grid-cols-3">
@@ -227,17 +231,16 @@ export function LeetCodeStats() {
 
         {!loading && !error && profile && badges && (
           <>
-            {/* ── Row 1: Problems + Badges ── */}
+            {/* Row 1: Problems + Badges */}
             <div className="grid gap-5 md:grid-cols-3">
 
-              {/* Problems Solved Card */}
+              {/* Problems Solved */}
               <div className="liquid-glass rounded-2xl p-6 flex flex-col gap-5">
                 <div className="flex items-center gap-2">
                   <Code2 className="h-4 w-4 text-cyan-300/70" />
                   <span className="text-[10px] font-mono tracking-widest uppercase text-white/40">Problems Solved</span>
                 </div>
 
-                {/* Main donut */}
                 <div className="flex justify-center">
                   <div className="relative flex items-center justify-center" style={{ width: 140, height: 140 }}>
                     <svg width={140} height={140} className="-rotate-90">
@@ -267,14 +270,12 @@ export function LeetCodeStats() {
                   </div>
                 </div>
 
-                {/* Mini rings */}
                 <div className="flex justify-around">
                   <CircleRing solved={profile.easySolved} total={profile.totalEasy} color="#4ade80" bg="rgba(74,222,128,0.12)" label="Easy" />
                   <CircleRing solved={profile.mediumSolved} total={profile.totalMedium} color="#facc15" bg="rgba(250,204,21,0.12)" label="Med" />
                   <CircleRing solved={profile.hardSolved} total={profile.totalHard} color="#f87171" bg="rgba(248,113,113,0.12)" label="Hard" />
                 </div>
 
-                {/* Bars */}
                 <div className="space-y-2.5">
                   {[
                     { label: "Easy", solved: profile.easySolved, total: profile.totalEasy, color: "#4ade80" },
@@ -305,7 +306,7 @@ export function LeetCodeStats() {
                 </div>
               </div>
 
-              {/* Badges Card */}
+              {/* Badges */}
               <div className="liquid-glass rounded-2xl p-6 md:col-span-2 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -319,7 +320,7 @@ export function LeetCodeStats() {
                 {badges.badges[0] && (
                   <div className="flex items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.03] p-4">
                     <img
-                      src={proxyImg(badges.badges[0].icon)}
+                      src={fixIconUrl(badges.badges[0].icon)}
                       alt={badges.badges[0].displayName}
                       className="h-14 w-14 object-contain drop-shadow-lg flex-shrink-0"
                     />
@@ -342,7 +343,7 @@ export function LeetCodeStats() {
                       className="group relative flex aspect-square items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.03] p-2 transition-all hover:border-amber-400/30 hover:bg-amber-400/[0.06]"
                     >
                       <img
-                        src={proxyImg(badge.icon)}
+                        src={fixIconUrl(badge.icon)}
                         alt={badge.displayName}
                         className="h-7 w-7 object-contain transition-transform group-hover:scale-110"
                       />
@@ -352,17 +353,19 @@ export function LeetCodeStats() {
               </div>
             </div>
 
-            {/* ── Row 2: Heatmap ── */}
+            {/* Row 2: Heatmap */}
             <div className="liquid-glass rounded-2xl p-6 overflow-hidden">
-              <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2">
                   <Flame className="h-4 w-4 text-orange-400/70" />
                   <span className="text-[10px] font-mono tracking-widest uppercase text-white/40">Submission Activity</span>
-                  <span className="text-[10px] font-mono text-white/20 ml-2">· {Object.keys(profile.submissionCalendar).length} active days this year</span>
+                  <span className="text-[10px] font-mono text-white/20 ml-2">
+                    · {totalSubmissions.toLocaleString()} submissions this year
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-[9px] font-mono text-white/25">
                   <span>Less</span>
-                  {["bg-white/[0.05]", "bg-cyan-600/50", "bg-cyan-500/65", "bg-cyan-400/80", "bg-cyan-300"].map((c, i) => (
+                  {["bg-white/[0.05]", "bg-cyan-600/50", "bg-cyan-500/70", "bg-cyan-400/85", "bg-cyan-300"].map((c, i) => (
                     <div key={i} className={`h-2.5 w-2.5 rounded-[2px] ${c}`} />
                   ))}
                   <span>More</span>
@@ -371,7 +374,7 @@ export function LeetCodeStats() {
 
               <div className="overflow-x-auto pb-1">
                 <div style={{ minWidth: 660 }}>
-                  {/* Month label row */}
+                  {/* Month labels */}
                   <div className="flex mb-1.5 ml-8">
                     {weeks.map((week, wIdx) => {
                       const lbl = monthLabels.find((m) => m.col === wIdx)
@@ -410,7 +413,7 @@ export function LeetCodeStats() {
               </div>
             </div>
 
-            {/* ── Row 3: Community Stats Cards ── */}
+            {/* Row 3: Community Stats */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {communityStats.map(({ label, value, sub, icon: Icon, color, glow }) => (
                 <motion.div
@@ -421,7 +424,7 @@ export function LeetCodeStats() {
                   transition={{ duration: 0.5 }}
                   className={`liquid-glass rounded-2xl p-5 flex items-center gap-4 bg-gradient-to-br ${glow} to-transparent`}
                 >
-                  <div className={`flex-shrink-0 rounded-xl border border-white/[0.08] bg-white/[0.04] p-3`}>
+                  <div className="flex-shrink-0 rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
                     <Icon className={`h-5 w-5 ${color}`} />
                   </div>
                   <div>
