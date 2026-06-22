@@ -218,7 +218,7 @@ function App() {
       <Education />
       <Stack />
       <Work />
-      <LeetCodeStats />
+      {/* <LeetCodeStats /> */}
       <Highlights />
       <Contact />
       </div>
