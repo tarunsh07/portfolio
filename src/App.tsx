@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { LeetCodeStats } from "@/components/ui/leetcode-stats"
 import Hls from "hls.js"
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion"
 import {
@@ -217,6 +218,7 @@ function App() {
       <Education />
       <Stack />
       <Work />
+      <LeetCodeStats />
       <Highlights />
       <Contact />
       </div>
