@@ -7,7 +7,6 @@ const PROFILE_URL = `https://alfa-leetcode-api.onrender.com/userProfile/${USERNA
 const BADGES_URL = `https://alfa-leetcode-api.onrender.com/${USERNAME}/badges`
 const LEETCODE_BASE = "https://leetcode.com"
 
-// Fix badge icon URL — relative paths come from the API for monthly badges
 function fixIconUrl(icon: string): string {
   if (icon.startsWith("http")) return icon
   return `${LEETCODE_BASE}${icon}`
@@ -42,9 +41,28 @@ function SkeletonBlock({ className }: { className: string }) {
   return <div className={`animate-pulse rounded-xl bg-white/[0.04] ${className}`} />
 }
 
-// Build heatmap grid (53 weeks) using UTC date keys to correctly match API timestamps
-function buildHeatmap(calendar: Record<string, number>) {
-  // Build a UTC-date → count map
+interface HeatDay {
+  dateKey: string
+  count: number
+  date: Date
+}
+
+interface HeatMonth {
+  label: string
+  year: number
+  month: number
+  days: (HeatDay | null)[]
+}
+
+function chunkArray<T>(arr: T[], size: number): T[][] {
+  const result: T[][] = []
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size))
+  }
+  return result
+}
+
+function buildHeatmapBlocks(calendar: Record<string, number>): HeatMonth[] {
   const calMap: Record<string, number> = {}
   Object.entries(calendar).forEach(([ts, count]) => {
     const d = new Date(Number(ts) * 1000)
@@ -52,65 +70,59 @@ function buildHeatmap(calendar: Record<string, number>) {
     calMap[key] = count
   })
 
-  // Build grid: end on current Saturday (UTC), start 52 weeks before that Sunday
   const now = new Date()
   const endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
-  // Advance to Saturday
-  endDate.setUTCDate(endDate.getUTCDate() + (6 - endDate.getUTCDay()))
-
+  
   const startDate = new Date(endDate)
   startDate.setUTCDate(startDate.getUTCDate() - 364)
-  // Snap back to Sunday
-  startDate.setUTCDate(startDate.getUTCDate() - startDate.getUTCDay())
 
-  const weeks: { dateKey: string; date: Date; count: number }[][] = []
+  const months: HeatMonth[] = []
+  let curMonth: HeatMonth | null = null
   const cur = new Date(startDate)
 
   while (cur <= endDate) {
-    const week: { dateKey: string; date: Date; count: number }[] = []
-    for (let d = 0; d < 7; d++) {
-      const dateKey = `${cur.getUTCFullYear()}-${String(cur.getUTCMonth() + 1).padStart(2, "0")}-${String(cur.getUTCDate()).padStart(2, "0")}`
-      const count = cur > endDate ? -1 : (calMap[dateKey] ?? 0)
-      week.push({ dateKey, date: new Date(cur), count })
-      cur.setUTCDate(cur.getUTCDate() + 1)
+    const mLabel = cur.toLocaleString("default", { month: "short", timeZone: "UTC" })
+    const mYear = cur.getUTCFullYear()
+    const mNum = cur.getUTCMonth()
+    
+    if (!curMonth || curMonth.month !== mNum) {
+      curMonth = { label: mLabel, year: mYear, month: mNum, days: [] }
+      months.push(curMonth)
+      
+      const startDayOfWeek = cur.getUTCDay()
+      for (let i = 0; i < startDayOfWeek; i++) {
+        curMonth.days.push(null)
+      }
     }
-    weeks.push(week)
-  }
-  return weeks
-}
 
-function getMonthLabels(weeks: { date: Date }[][]) {
-  const labels: { label: string; col: number }[] = []
-  let lastMonth = -1
-  weeks.forEach((week, col) => {
-    const m = week[0].date.getUTCMonth()
-    if (m !== lastMonth) {
-      labels.push({
-        label: week[0].date.toLocaleString("default", { month: "short", timeZone: "UTC" }),
-        col,
-      })
-      lastMonth = m
-    }
-  })
-  return labels
+    const dateKey = `${cur.getUTCFullYear()}-${String(cur.getUTCMonth() + 1).padStart(2, "0")}-${String(cur.getUTCDate()).padStart(2, "0")}`
+    curMonth.days.push({
+      dateKey,
+      count: calMap[dateKey] ?? 0,
+      date: new Date(cur)
+    })
+
+    cur.setUTCDate(cur.getUTCDate() + 1)
+  }
+  
+  return months
 }
 
 function HeatCell({ count }: { count: number }) {
-  if (count < 0) return <div className="h-[10px] w-[10px] rounded-[2px]" />
   const cls =
     count === 0
       ? "bg-white/[0.05]"
-      : count <= 2
-      ? "bg-cyan-600/50"
+      : count <= 1
+      ? "bg-[#0e4429]"
+      : count <= 3
+      ? "bg-[#006d32]"
       : count <= 5
-      ? "bg-cyan-500/70"
-      : count <= 10
-      ? "bg-cyan-400/85"
-      : "bg-cyan-300"
+      ? "bg-[#26a641]"
+      : "bg-[#39d353]"
   return (
     <div
       title={count === 0 ? "No submissions" : `${count} submission${count > 1 ? "s" : ""}`}
-      className={`h-[10px] w-[10px] rounded-[2px] transition-all hover:scale-125 ${cls}`}
+      className={`h-[11px] w-[11px] rounded-[3px] transition-all hover:scale-125 hover:ring-1 hover:ring-white/50 ${cls}`}
     />
   )
 }
@@ -167,15 +179,13 @@ export function LeetCodeStats() {
       .finally(() => setLoading(false))
   }, [])
 
-  const weeks = profile?.submissionCalendar ? buildHeatmap(profile.submissionCalendar) : []
-  const monthLabels = weeks.length > 0 ? getMonthLabels(weeks) : []
+  const monthsBlocks = profile?.submissionCalendar ? buildHeatmapBlocks(profile.submissionCalendar) : []
   const totalSubmissions = profile
     ? Object.values(profile.submissionCalendar).reduce((a, b) => a + b, 0)
     : 0
 
-  // Community stats (not available via public API — hardcoded from profile)
   const communityStats = [
-    { label: "Solution Views", value: "103.7k", sub: "+341 this week", icon: Eye, color: "text-cyan-300", glow: "from-cyan-500/10" },
+    { label: "Solution Views", value: "103.7k+", sub: "+341 this week", icon: Eye, color: "text-cyan-300", glow: "from-cyan-500/10" },
     { label: "Solutions Published", value: "15", sub: "Accepted explanations", icon: BookOpen, color: "text-emerald-300", glow: "from-emerald-500/10" },
     { label: "Reputation", value: "724", sub: "Community standing", icon: Star, color: "text-amber-300", glow: "from-amber-500/10" },
   ]
@@ -186,8 +196,6 @@ export function LeetCodeStats() {
       className="border-t border-white/10 px-5 py-16 md:px-12 md:py-24 lg:px-20"
     >
       <motion.div style={{ opacity, y }} className="mx-auto max-w-7xl space-y-5">
-
-        {/* Heading */}
         <div className="mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="section-label mb-3">Competitive Programming</p>
@@ -207,7 +215,6 @@ export function LeetCodeStats() {
           </a>
         </div>
 
-        {/* Skeleton */}
         {loading && (
           <div className="space-y-5">
             <div className="grid gap-5 md:grid-cols-3">
@@ -231,10 +238,7 @@ export function LeetCodeStats() {
 
         {!loading && !error && profile && badges && (
           <>
-            {/* Row 1: Problems + Badges */}
             <div className="grid gap-5 md:grid-cols-3">
-
-              {/* Problems Solved */}
               <div className="liquid-glass rounded-2xl p-6 flex flex-col gap-5">
                 <div className="flex items-center gap-2">
                   <Code2 className="h-4 w-4 text-cyan-300/70" />
@@ -306,7 +310,6 @@ export function LeetCodeStats() {
                 </div>
               </div>
 
-              {/* Badges */}
               <div className="liquid-glass rounded-2xl p-6 md:col-span-2 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -316,7 +319,6 @@ export function LeetCodeStats() {
                   <span className="text-2xl font-bold text-white">{badges.badgesCount}</span>
                 </div>
 
-                {/* Most recent badge spotlight */}
                 {badges.badges[0] && (
                   <div className="flex items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.03] p-4">
                     <img
@@ -334,7 +336,6 @@ export function LeetCodeStats() {
                   </div>
                 )}
 
-                {/* Badge grid */}
                 <div className="grid grid-cols-5 gap-2.5 sm:grid-cols-6 lg:grid-cols-8">
                   {badges.badges.slice(1).map((badge) => (
                     <div
@@ -355,7 +356,7 @@ export function LeetCodeStats() {
 
             {/* Row 2: Heatmap */}
             <div className="liquid-glass rounded-2xl p-6 overflow-hidden">
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div className="flex items-center gap-2">
                   <Flame className="h-4 w-4 text-orange-400/70" />
                   <span className="text-[10px] font-mono tracking-widest uppercase text-white/40">Submission Activity</span>
@@ -365,50 +366,57 @@ export function LeetCodeStats() {
                 </div>
                 <div className="flex items-center gap-2 text-[9px] font-mono text-white/25">
                   <span>Less</span>
-                  {["bg-white/[0.05]", "bg-cyan-600/50", "bg-cyan-500/70", "bg-cyan-400/85", "bg-cyan-300"].map((c, i) => (
-                    <div key={i} className={`h-2.5 w-2.5 rounded-[2px] ${c}`} />
+                  {["bg-white/[0.05]", "bg-[#0e4429]", "bg-[#006d32]", "bg-[#26a641]", "bg-[#39d353]"].map((c, i) => (
+                    <div key={i} className={`h-[11px] w-[11px] rounded-[3px] ${c}`} />
                   ))}
                   <span>More</span>
                 </div>
               </div>
 
-              <div className="overflow-x-auto pb-1">
-                <div style={{ minWidth: 660 }}>
-                  {/* Month labels */}
-                  <div className="flex mb-1.5 ml-8">
-                    {weeks.map((week, wIdx) => {
-                      const lbl = monthLabels.find((m) => m.col === wIdx)
-                      return (
-                        <div key={wIdx} style={{ width: 13, flexShrink: 0, marginRight: 3 }}>
-                          {lbl && (
-                            <span className="text-[8.5px] font-mono text-white/22 whitespace-nowrap">
-                              {lbl.label}
-                            </span>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
+              <div className="overflow-x-auto pb-4">
+                <div className="flex gap-4 min-w-max">
+                  {monthsBlocks.map((month, mIdx) => {
+                    const columns = chunkArray(month.days, 7)
+                    
+                    // Find if there's a monthly challenge badge for this month
+                    const monthBadge = badges.badges.find(b => {
+                      const d = new Date(b.creationDate)
+                      return d.getUTCFullYear() === month.year && 
+                             d.getUTCMonth() === month.month && 
+                             b.displayName.toLowerCase().includes("challenge")
+                    })
 
-                  {/* Day labels + grid */}
-                  <div className="flex">
-                    <div className="flex flex-col gap-[3px] mr-1.5">
-                      {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-                        <div key={d} style={{ height: 10 }} className="flex items-center">
-                          <span className="text-[7.5px] font-mono text-white/18 w-7 text-right pr-1">{d}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex gap-[3px]">
-                      {weeks.map((week, wIdx) => (
-                        <div key={wIdx} className="flex flex-col gap-[3px]">
-                          {week.map((day, dIdx) => (
-                            <HeatCell key={dIdx} count={day.count} />
+                    return (
+                      <div key={mIdx} className="flex flex-col gap-2">
+                        <div className="flex gap-[4px]">
+                          {columns.map((col, cIdx) => (
+                            <div key={cIdx} className="flex flex-col gap-[4px]">
+                              {col.map((day, dIdx) => (
+                                day ? (
+                                  <HeatCell key={dIdx} count={day.count} />
+                                ) : (
+                                  <div key={`empty-${dIdx}`} className="w-[11px] h-[11px]" />
+                                )
+                              ))}
+                            </div>
                           ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                        <div className="flex flex-col items-center gap-1.5 mt-1">
+                          <span className="text-[10px] font-medium text-white/40">{month.label}</span>
+                          {monthBadge ? (
+                            <img 
+                              src={fixIconUrl(monthBadge.icon)} 
+                              alt={monthBadge.displayName} 
+                              className="w-4 h-4 object-contain opacity-80" 
+                              title={monthBadge.displayName}
+                            />
+                          ) : (
+                            <div className="w-4 h-4" />
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
