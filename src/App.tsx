@@ -469,7 +469,7 @@ function Highlights() {
 
 function Contact() {
   return (
-    <Hero id="contact" className="py-24 md:py-32 lg:px-20 border-t-0 mt-24" gradient={true} blur={false}>
+    <Hero id="contact" className="py-24 md:py-32 lg:px-20 border-t-0 mt-20" gradient={true} blur={false}>
       <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center text-center">
         <motion.h2 {...fadeUp(0)} className="mt-8 text-5xl font-medium md:text-7xl">
           Let us <span className="font-serif font-normal italic text-cyan-200">connect.</span>
