@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { LeetCodeStats } from "@/components/ui/leetcode-stats"
+import { Hero } from "@/components/ui/hero"
 import Hls from "hls.js"
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion"
 import {
@@ -468,11 +469,8 @@ function Highlights() {
 
 function Contact() {
   return (
-    <section id="contact" className="relative overflow-hidden border-t border-white/10 px-5 py-24 md:px-12 md:py-32 lg:px-20">
-      <HlsVideo src={CTA_STREAM} />
-      <div className="absolute inset-0 z-[1] bg-[#06101b]/55" />
+    <Hero id="contact" className="py-24 md:py-32 lg:px-20 border-t-0" gradient={true} blur={false}>
       <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center text-center">
-        <LoopMark large />
         <motion.h2 {...fadeUp(0)} className="mt-8 text-5xl font-medium md:text-7xl">
           Let us <span className="font-serif font-normal italic text-cyan-200">connect.</span>
         </motion.h2>
@@ -489,7 +487,7 @@ function Contact() {
         </motion.div>
         <motion.p {...fadeUp(0.2)} className="mt-7 text-sm text-white/55">New Delhi, India</motion.p>
       </div>
-    </section>
+    </Hero>
   )
 }
 
