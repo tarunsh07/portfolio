@@ -50,36 +50,43 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
         {...props}
       >
         {gradient && (
-          <div className="absolute top-12 isolate z-0 flex w-screen flex-1 items-start justify-center">
+          <div className="absolute top-0 isolate z-0 flex w-screen flex-1 items-start justify-center">
             {blur && (
               <div className="absolute top-0 z-50 h-48 w-screen bg-transparent opacity-10 backdrop-blur-md" />
             )}
 
             {/* Main glow */}
-            <div className="absolute inset-auto z-50 h-36 w-[28rem] -translate-y-[-30%] rounded-full bg-cyan-400/40 opacity-80 blur-3xl" />
+            <motion.div 
+              initial={{ opacity: 0, width: "14rem" }}
+              whileInView={{ opacity: 0.8, width: "28rem" }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
+              className="absolute inset-auto z-50 h-36 -translate-y-[-30%] rounded-full bg-cyan-400/40 blur-3xl" 
+            />
 
             {/* Lamp effect */}
             <motion.div
-              initial={{ width: "8rem" }}
+              initial={{ opacity: 0, width: "8rem" }}
               viewport={{ once: true }}
               transition={{ ease: "easeInOut", delay: 0.3, duration: 0.8 }}
-              whileInView={{ width: "16rem" }}
+              whileInView={{ opacity: 1, width: "16rem" }}
               className="absolute top-0 z-30 h-36 -translate-y-[20%] rounded-full bg-cyan-300/50 blur-2xl"
             />
 
             {/* Top line */}
             <motion.div
-              initial={{ width: "15rem" }}
+              initial={{ opacity: 0, width: "15rem" }}
               viewport={{ once: true }}
               transition={{ ease: "easeInOut", delay: 0.3, duration: 0.8 }}
-              whileInView={{ width: "30rem" }}
+              whileInView={{ opacity: 1, width: "30rem" }}
               className="absolute inset-auto z-50 h-0.5 -translate-y-[-10%] bg-cyan-300/70"
             />
 
             {/* Left gradient cone */}
             <motion.div
-              initial={{ opacity: 0.5, width: "15rem" }}
+              initial={{ opacity: 0, width: "15rem" }}
               whileInView={{ opacity: 1, width: "30rem" }}
+              viewport={{ once: true }}
               transition={{
                 delay: 0.3,
                 duration: 0.8,
@@ -96,8 +103,9 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
 
             {/* Right gradient cone */}
             <motion.div
-              initial={{ opacity: 0.5, width: "15rem" }}
+              initial={{ opacity: 0, width: "15rem" }}
               whileInView={{ opacity: 1, width: "30rem" }}
+              viewport={{ once: true }}
               transition={{
                 delay: 0.3,
                 duration: 0.8,
