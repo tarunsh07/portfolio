@@ -307,7 +307,7 @@ function Education() {
                   <p className="section-label">University</p>
                   <h3 className="mt-4 text-3xl font-semibold md:text-4xl">Netaji Subhas University of Technology</h3>
                   <p className="mt-3 text-lg text-white/65">B.Tech in Electrical Engineering</p>
-                  <p className="mt-5 text-base leading-8 text-white/55">9.60 CGPA among 2200+ engineering students, 2023 - 2027.</p>
+                  <p className="mt-5 text-base leading-8 text-white/55">9.62 CGPA among 2200+ engineering students, 2023 - 2027.</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 shrink-0 min-w-[280px] md:min-w-[360px]">
                   <div className="rank-highlight"><strong>#3</strong><span>University Rank</span></div>
