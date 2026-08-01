@@ -172,12 +172,12 @@ const skillGroups = [
 ]
 
 const highlights = [
-  ["University Rank 3", "Placed third among more than 2,200 engineering students with a 9.60 CGPA.", "34 211 238"],
-  ["1,000+ coding problems", "Solved DSA and competitive programming problems across LeetCode, Codeforces, and GeeksforGeeks.", "190 242 100"],
-  ["3x CVSPK Scholarship", "Received the university scholarship three times for maintaining a position in the academic top 5%.", "167 139 250"],
-  // ["102k+ solution views", "Published LeetCode explanations that have helped readers across a broad range of DSA topics.", "251 191 36"],
-  ["GYANSUTRA resource hub", "Conceptualized and co-created an academic resource hub in collaboration with Astronomy Club of College, now serving 2,200+ students.", "52 211 153"],
+  ["Code with Cisco 2026 finalist", "Selected as top 75 out of 25,000+ applications for a 2-day offline hackathon at the Cisco Bangalore campus.", "34 211 238"],
+  ["LeetCode Knight", "Ranked Knight (rating: 1869) with 105k+ overall views on published solutions.", "190 242 100"],
   ["SIH 2024 pre-finalist", "Led a team to the pre-final round of Smart India Hackathon in a field of more than 350 teams.", "244 114 182"],
+  ["GYANSUTRA resource hub", "Conceptualized and co-created an academic resource hub in collaboration with Astronomy Club of College, now serving 2,200+ students.", "52 211 153"],
+  ["University Rank 2", "Placed second among more than 2,200 engineering students with a 9.60 CGPA.", "251 191 36"],
+  ["3x CVSPK Scholarship", "Received the university scholarship three times for maintaining a position in the academic top 5%.", "167 139 250"],
 ]
 
 function GlobalLoader() {
@@ -310,8 +310,8 @@ function Education() {
                   <p className="mt-5 text-base leading-8 text-white/55">9.62 CGPA among 2200+ engineering students, 2023 - 2027.</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 shrink-0 min-w-[280px] md:min-w-[360px]">
-                  <div className="rank-highlight"><strong>#3</strong><span>University Rank</span></div>
-                  <div className="rank-highlight"><strong>#2</strong><span>Department Rank</span></div>
+                  <div className="rank-highlight"><strong>#2</strong><span>University Rank</span></div>
+                  <div className="rank-highlight"><strong>#1</strong><span>Department Rank</span></div>
                 </div>
               </div>
             </SpotlightCard>
